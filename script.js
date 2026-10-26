@@ -53,7 +53,7 @@ let wishIndex = -1;
 let audioCtx = null;
 let fanfareToken = 0;
 let relightAt = 0;
-let baseHint = "Maintiens le bouton, ou la barre espace.";
+let baseHint = "Maintiens le bouton.";
 let lastFrame = performance.now();
 let rainAcc = 0;
 
