@@ -267,7 +267,7 @@ function startParty(rawName, rawAge) {
   buildCandles(count);
   power = 0;
   blown = false;
-  const extra = age && age > 8 ? " On en a planté 8. Les autres finissent la chantilly." : "";
+  const extra = age && age > 8 ? " j'en ai planté 8. 38 ça merder le CSS." : "";
   baseHint = `Maintiens le bouton, ou la barre espace.${extra}`;
   setHint(baseHint);
   party.hidden = false;
