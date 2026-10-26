@@ -10,18 +10,11 @@ const TAGLINES = [
 ];
 
 const WISHES = [
-  "Que toutes tes Phobes soient parfaites, parfaitement parquetisées et absolument intouchables !",
+  "Que toutes tes FOB soient parfaites, parfaitement parquetisées et absolument intouchables !",
   "Que la météo du jeu soit toujours avec toi et que les missiles ennemis t'évitent gentiment par politesse",
   "Que Baïne ne pisse pas dans ton lit",
   "Que Baïne ne boive plus l'huile de friture",
 
-];
-
-const SONG = [
-  [392, 0.75], [392, 0.25], [440, 1], [392, 1], [523.25, 1], [493.88, 2],
-  [392, 0.75], [392, 0.25], [440, 1], [392, 1], [587.33, 1], [523.25, 2],
-  [392, 0.75], [392, 0.25], [783.99, 1], [659.25, 1], [523.25, 1], [493.88, 1], [440, 2],
-  [698.46, 0.75], [698.46, 0.25], [659.25, 1], [523.25, 1], [587.33, 1], [523.25, 2],
 ];
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -38,7 +31,6 @@ const hint = document.getElementById("hint");
 const wish = document.getElementById("wish");
 const wishText = document.getElementById("wish-text");
 const blowBtn = document.getElementById("blow");
-const musicBtn = document.getElementById("music");
 const fanfare = document.getElementById("fanfare");
 const micBtn = document.getElementById("mic");
 const afterRow = document.getElementById("after");
@@ -59,10 +51,7 @@ let micStream = null;
 let micLoop = 0;
 let wishIndex = -1;
 let audioCtx = null;
-let musicOn = false;
 let fanfareToken = 0;
-let musicToken = 0;
-let musicTimer = 0;
 let relightAt = 0;
 let baseHint = "Maintiens le bouton, ou la barre espace.";
 let lastFrame = performance.now();
@@ -143,46 +132,6 @@ function audio() {
   return audioCtx;
 }
 
-function playNote(freq, time, dur) {
-  const ac = audio();
-  const osc = ac.createOscillator();
-  const gain = ac.createGain();
-  const end = time + Math.max(0.12, dur);
-  osc.type = "triangle";
-  osc.frequency.value = freq;
-  gain.gain.setValueAtTime(0.0001, time);
-  gain.gain.exponentialRampToValueAtTime(0.05, time + 0.03);
-  gain.gain.exponentialRampToValueAtTime(0.0001, end - 0.02);
-  osc.connect(gain);
-  gain.connect(ac.destination);
-  osc.start(time);
-  osc.stop(end);
-}
-
-function startMusic() {
-  const token = ++musicToken;
-  let index = 0;
-  const step = () => {
-    if (token !== musicToken) return;
-    const [freq, beats] = SONG[index];
-    const dur = beats * 0.34;
-    playNote(freq, audio().currentTime + 0.04, dur);
-    index += 1;
-    let wait = dur * 1000;
-    if (index >= SONG.length) {
-      index = 0;
-      wait += 650;
-    }
-    musicTimer = window.setTimeout(step, wait);
-  };
-  step();
-}
-
-function stopMusic() {
-  musicToken += 1;
-  window.clearTimeout(musicTimer);
-}
-
 function primeFanfare() {
   if (!fanfare.paused) return;
   const token = ++fanfareToken;
@@ -199,12 +148,6 @@ function primeFanfare() {
 
 function playFanfare() {
   fanfareToken += 1;
-  if (musicOn) {
-    musicOn = false;
-    stopMusic();
-    musicBtn.setAttribute("aria-pressed", "false");
-    musicBtn.textContent = "Musique";
-  }
   fanfare.volume = 1;
   try { fanfare.currentTime = 0; } catch { /* le fichier n’est pas encore prêt */ }
   fanfare.play().catch(() => {
@@ -478,7 +421,6 @@ function tick(now) {
 blowBtn.addEventListener("pointerdown", (event) => {
   if (event.button !== 0 || blown) return;
   event.preventDefault();
-  try { audio(); } catch { /* le son est un bonus */ }
   primeFanfare();
   try { blowBtn.setPointerCapture(event.pointerId); } catch { /* le souffle part quand même */ }
   setBlowing(true);
@@ -503,7 +445,6 @@ window.addEventListener("keydown", (event) => {
   if (button && button.id !== "blow") return;
   event.preventDefault();
   if (!blown) {
-    try { audio(); } catch { /* le son est un bonus */ }
     primeFanfare();
     setBlowing(true);
   }
@@ -511,14 +452,6 @@ window.addEventListener("keydown", (event) => {
 
 window.addEventListener("keyup", (event) => {
   if (event.code === "Space") setBlowing(false);
-});
-
-musicBtn.addEventListener("click", () => {
-  musicOn = !musicOn;
-  musicBtn.setAttribute("aria-pressed", String(musicOn));
-  musicBtn.textContent = musicOn ? "Couper la musique" : "Musique";
-  if (musicOn) startMusic();
-  else stopMusic();
 });
 
 micBtn?.addEventListener("click", () => {
