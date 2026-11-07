@@ -1,6 +1,6 @@
 const CONFIG = {
-  prenom: "Wifly",
-  age: 38,
+  prenom: "Papouth",
+  age: 63,
 };
 
 const COLORS = ["#ff5d4a", "#ffc53d", "#2ec4b6", "#ff7aa2", "#c9a6ff", "#8be28b", "#fff4df"];
@@ -10,10 +10,7 @@ const TAGLINES = [
 ];
 
 const WISHES = [
-  "Que toutes tes FOB soient parfaites, parfaitement parquetisées et absolument intouchables !",
-  "Que la météo du jeu soit toujours avec toi et que les missiles ennemis t'évitent gentiment par politesse",
-  "Que Baïne ne pisse pas dans ton lit",
-  "Que Baïne ne boive plus l'huile de friture",
+  "Bon anniversaire Papouth"
 
 ];
 
@@ -53,7 +50,7 @@ let wishIndex = -1;
 let audioCtx = null;
 let fanfareToken = 0;
 let relightAt = 0;
-let baseHint = "Maintiens le bouton.";
+let baseHint = "Maintiens le bouton, ou la barre espace.";
 let lastFrame = performance.now();
 let rainAcc = 0;
 
@@ -268,7 +265,7 @@ function startParty(rawName, rawAge) {
   power = 0;
   blown = false;
   const extra = age && age > 8 ? " j'en ai planté 8. 38 ça merder le CSS." : "";
-  baseHint = `Maintiens le bouton, ou la barre espace.${extra}`;
+  baseHint = `Maintiens le bouton.${extra}`;
   setHint(baseHint);
   party.hidden = false;
   partyOn = true;
